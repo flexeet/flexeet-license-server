@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexeet License Manager V2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-pro {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-basic {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge-enterprise {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .badge-active {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-expired {
+            background: #ef4444;
+            color: white;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .license-key {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            display: inline-block;
+        }
+
+        .device-list {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .device-item {
+            padding: 4px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔐 Flexeet License Manager V2</h1>
+            <p>Manage licenses, devices, and expiry dates</p>
+        </div>
+
+        <!-- Create License -->
+        <div class="card">
+            <h2>➕ Create New License</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Admin API Key</label>
+                    <input type="password" id="adminApiKey" placeholder="Enter admin API key">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="licenseEmail" placeholder="customer@example.com">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>License Tier</label>
+                    <select id="licenseTier">
+                        <option value="basic">BASIC</option>
+                        <option value="pro" selected>PRO</option>
+                        <option value="enterprise">ENTERPRISE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Max Devices</label>
+                    <input type="number" id="maxDevices" value="2" min="1" max="10">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Duration (Days)</label>
+                    <input type="number" id="durationDays" value="30" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Free Trial (Days) - Optional</label>
+                    <input type="number" id="freeTrialDays" value="0" min="0" placeholder="0 = No trial">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="createLicense()">Create License</button>
+
+            <div id="createResult"></div>
+        </div>
+
+        <!-- Manage Licenses -->
+        <div class="card">
+            <h2>📋 All Licenses</h2>
+
+            <div class="form-group">
+                <label>Admin API Key</label>
+                <input type="password" id="adminApiKeyView" placeholder="Enter admin API key">
+            </div>
+
+            <button class="btn btn-primary" onclick="loadLicenses()">Load Licenses</button>
+
+            <div id="licensesTable"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        console.log('API Base URL:', API_BASE);
+
+        async function createLicense() {
+            const adminApiKey = document.getElementById('adminApiKey').value.trim();
+            const email = document.getElementById('licenseEmail').value.trim();
+            const tier = document.getElementById('licenseTier').value;
+            const maxDevices = parseInt(document.getElementById('maxDevices').value);
+            const durationDays = parseInt(document.getElementById('durationDays').value);
+            const freeTrialDays = parseInt(document.getElementById('freeTrialDays').value) || 0;
+
+            if (!adminApiKey || !email) {
+                showResult('createResult', 'Please fill in all required fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/create-license`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        adminApiKey,
+                        email,
+                        tier,
+                        maxDevices,
+                        durationDays,
+                        freeTrialDays
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const expiryDate = new Date(result.license.expiresAt).toLocaleDateString();
+                    const isTrial = freeTrialDays > 0;
+
+                    showResult('createResult', `
+                        <strong>✅ License Created Successfully!</strong><br><br>
+                        <strong>License Key:</strong> <span class="license-key">${result.license.licenseKey}</span><br>
+                        <strong>Email:</strong> ${result.license.email}<br>
+                        <strong>Tier:</strong> ${result.license.tier.toUpperCase()}<br>
+                        <strong>Max Devices:</strong> ${result.license.maxDevices}<br>
+                        <strong>Expires:</strong> ${expiryDate}${isTrial ? ` (${freeTrialDays} days free trial)` : ''}<br>
+                        <strong>Status:</strong> Active
+                    `, 'success');
+
+                    // Clear form
+                    document.getElementById('licenseEmail').value = '';
+                } else {
+                    showResult('createResult', '❌ ' + (result.error || 'Failed to create license'), 'error');
+                }
+            } catch (error) {
+                showResult('createResult', '❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        async function loadLicenses() {
+            const adminApiKey = document.getElementById('adminApiKeyView').value.trim();
+
+            if (!adminApiKey) {
+                alert('Please enter admin API key');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/licenses?adminApiKey=${adminApiKey}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayLicenses(result.licenses);
+                } else {
+                    alert('❌ ' + (result.error || 'Failed to load licenses'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        function displayLicenses(licenses) {
+            if (!licenses || licenses.length === 0) {
+                document.getElementById('licensesTable').innerHTML = '<p style="margin-top: 20px; color: #666;">No licenses found.</p>';
+                return;
+            }
+
+            // Calculate stats
+            const totalLicenses = licenses.length;
+            const activeLicenses = licenses.filter(l => new Date(l.expiresAt) > new Date()).length;
+            const expiredLicenses = totalLicenses - activeLicenses;
+            const totalDevices = licenses.reduce((sum, l) => sum + (l.devices?.length || 0), 0);
+
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Licenses</h3>
+                        <div class="number">${totalLicenses}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Licenses</h3>
+                        <div class="number">${activeLicenses}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Expired Licenses</h3>
+                        <div class="number">${expiredLicenses}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Devices</h3>
+                        <div class="number">${totalDevices}</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>License Key</th>
+                            <th>Email</th>
+                            <th>Tier</th>
+                            <th>Devices</th>
+                            <th>Expires</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            licenses.forEach(license => {
+                const isExpired = new Date(license.expiresAt) < new Date();
+                const expiryDate = new Date(license.expiresAt).toLocaleDateString();
+                const daysLeft = Math.ceil((new Date(license.expiresAt) - new Date()) / (1000 * 60 * 60 * 24));
+
+                const tierBadge = license.tier === 'pro' ? 'badge-pro' : license.tier === 'enterprise' ? 'badge-enterprise' : 'badge-basic';
+                const statusBadge = isExpired ? 'badge-expired' : 'badge-active';
+
+                const deviceCount = license.devices?.length || 0;
+                const maxDevices = license.maxDevices || 2;
+
+                html += `
+                    <tr>
+                        <td><span class="license-key">${license.licenseKey}</span></td>
+                        <td>${license.email}</td>
+                        <td><span class="badge ${tierBadge}">${license.tier.toUpperCase()}</span></td>
+                        <td>
+                            ${deviceCount} / ${maxDevices}
+                            ${deviceCount > 0 ? `<button class="btn btn-warning btn-sm" onclick="viewDevices('${license.licenseKey}')">View</button>` : ''}
+                            ${deviceCount > 0 ? `<button class="btn btn-danger btn-sm" onclick="resetDevices('${license.licenseKey}')">Reset</button>` : ''}
+                        </td>
+                        <td>
+                            ${expiryDate}
+                            ${!isExpired ? `<br><small style="color: #666;">(${daysLeft} days left)</small>` : ''}
+                        </td>
+                        <td><span class="badge ${statusBadge}">${isExpired ? 'EXPIRED' : 'ACTIVE'}</span></td>
+                        <td>
+                            <button class="btn btn-success btn-sm" onclick="extendLicense('${license.licenseKey}')">Extend</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('licensesTable').innerHTML = html;
+        }
+
+        async function viewDevices(licenseKey) {
+            const adminApiKey = document.getElementById('adminApiKeyView').value.trim();
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/license-details?licenseKey=${licenseKey}&adminApiKey=${adminApiKey}`);
+                const result = await response.json();
+
+                if (result.success && result.license.devices) {
+                    let deviceInfo = `Devices for ${licenseKey}:\n\n`;
+                    result.license.devices.forEach((device, index) => {
+                        const activatedAt = new Date(device.activatedAt).toLocaleString();
+                        deviceInfo += `Device ${index + 1}:\n`;
+                        deviceInfo += `Fingerprint: ${device.fingerprint.substring(0, 16)}...\n`;
+                        deviceInfo += `Activated: ${activatedAt}\n\n`;
+                    });
+                    alert(deviceInfo);
+                } else {
+                    alert('No devices found or error loading details');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function resetDevices(licenseKey) {
+            if (!confirm(`Reset all devices for license ${licenseKey}?\n\nThis will allow the user to activate on new devices.`)) {
+                return;
+            }
+
+            const adminApiKey = document.getElementById('adminApiKeyView').value.trim();
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/reset-devices`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ licenseKey, adminApiKey })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('✅ Devices reset successfully!');
+                    loadLicenses();
+                } else {
+                    alert('❌ ' + (result.error || 'Failed to reset devices'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function extendLicense(licenseKey) {
+            const days = prompt('How many days to add to this license?', '30');
+
+            if (!days || isNaN(days) || parseInt(days) <= 0) {
+                return;
+            }
+
+            const adminApiKey = document.getElementById('adminApiKeyView').value.trim();
+
+            try {
+                const response = await fetch(`${API_BASE}/admin/extend-license`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        licenseKey,
+                        additionalDays: parseInt(days),
+                        adminApiKey
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const newExpiry = new Date(result.license.expiresAt).toLocaleDateString();
+                    alert(`✅ License extended successfully!\n\nNew expiry date: ${newExpiry}`);
+                    loadLicenses();
+                } else {
+                    alert('❌ ' + (result.error || 'Failed to extend license'));
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `result ${type}`;
+        }
+    </script>
+</body>
+</html>
