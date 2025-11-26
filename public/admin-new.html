@@ -498,6 +498,11 @@
           <input type="number" id="editMaxDevices" min="1" max="10" />
         </div>
 
+        <div class="form-group">
+          <label>Durations</label>
+          <input type="number" id="editDurations" />
+        </div>
+
         <div class="modal-footer">
           <button class="btn btn-cancel" onclick="closeEditModal()">
             Cancel
@@ -745,12 +750,18 @@
           if (result.success) {
             const license = result.license;
 
+            const date = new Date(license.expiresAt);
+            const today = new Date();
+            const diffTime = Math.abs(date - today);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
             // Populate modal with current values
             document.getElementById("editLicenseKey").value =
               license.licenseKey;
             document.getElementById("editLicenseEmail").value = license.email;
             document.getElementById("editMaxDevices").value =
               license.maxDevices;
+            document.getElementById("editDurations").value = diffDays;
 
             // Store admin API key for later use
             document.getElementById("editLicenseModal").dataset.adminApiKey =
@@ -780,6 +791,7 @@
         const maxDevices = parseInt(
           document.getElementById("editMaxDevices").value
         );
+        const durations = document.getElementById("editDurations").value;
         const adminApiKey =
           document.getElementById("editLicenseModal").dataset.adminApiKey;
 
@@ -793,6 +805,11 @@
           return;
         }
 
+        if (!durations || durations < 1) {
+          showModalMessage("Please enter a valid duration value", "error");
+          return;
+        }
+
         try {
           const response = await fetch(`${API_BASE}/admin/edit-license`, {
             method: "POST",
@@ -802,6 +819,7 @@
               email,
               maxDevices,
               adminApiKey,
+              durationDays: parseInt(durations),
             }),
           });
 

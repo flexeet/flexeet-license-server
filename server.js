@@ -490,7 +490,8 @@ app.post("/api/admin/create-license", async (req, res) => {
 // ADMIN: Edit License
 app.post("/api/admin/edit-license", async (req, res) => {
   try {
-    const { adminApiKey, licenseKey, email, maxDevices } = req.body;
+    const { adminApiKey, licenseKey, email, maxDevices, durationDays } =
+      req.body;
 
     if (adminApiKey !== process.env.ADMIN_API_KEY) {
       return res.status(401).json({
@@ -510,6 +511,11 @@ app.post("/api/admin/edit-license", async (req, res) => {
 
     if (email) license.email = email;
     if (maxDevices) license.maxDevices = maxDevices;
+    if (durationDays) {
+      const newExpiry = new Date();
+      newExpiry.setDate(newExpiry.getDate() + parseInt(durationDays));
+      license.expiryDate = newExpiry;
+    }
     await license.save();
 
     res.json({
@@ -520,6 +526,7 @@ app.post("/api/admin/edit-license", async (req, res) => {
         email: license.email,
         tier: license.tier,
         maxDevices: license.maxDevices,
+        expiresAt: license.expiryDate,
       },
     });
   } catch (error) {
